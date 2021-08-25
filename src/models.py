@@ -8,23 +8,45 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class Favoritos(Base):
+    __tablename__ = 'favoritos'
     id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+    mail = Column(String(250), ForeignKey('usuario.nickname'), nullable=False, )
+    personajefavorito=Column(String(250))
+    planetafavorito = Column(String(250))
+    vehiculofavorito= Column(Integer,)
+    relacionPersonajes = relationship("Personajes")
+    relacionPlaneta = relationship("Planeta")
+    relacionVehiculos = relationship("Vehiculo")
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Personajes(Base):
+    __tablename__ = 'personajes'
+    uid = Column(Integer, primary_key=True)
+    name = Column(String(250), ForeignKey('favoritos.personajefavorito'), nullable=False, )
+    gender =Column(String(250))
+    homeworld = Column(String(250))
+
+
+class Planeta(Base):
+    __tablename__ = 'planeta'
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    name = Column(String(250), ForeignKey('favoritos.planetafavorito'), nullable=False, )
+    population = Column(Integer)
+    homeworld = Column(String(250))
+
+class Vehiculo(Base):
+    __tablename__ = 'vehiculo'
+    name = Column(String(250),  ForeignKey('favoritos.vehiculofavorito'), primary_key=True)
+    modelo = Column(String(250), nullable=False, )
+    manufactura= Column(String(250))
+    
+class Usuario(Base):
+    __tablename__ = 'usuario'
+    nickname = Column(Integer, primary_key=True)
+    name = Column(String(50), nullable=False)
+    mail= Column(String(50))
+    relacionFavoritos = relationship("Favoritos")
+
 
     def to_dict(self):
         return {}
